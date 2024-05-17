@@ -1,22 +1,22 @@
 return {
   {
-    "tokyonight.nvim",
+    'folke/tokyonight.nvim',
     priority = 1000,
     opts = function()
       return {
-        style = "moon",
+        style = 'moon',
         sidebars = {
-          "qf",
-          "vista_kind",
-          "spectre_panel",
-          "startuptime",
-          "Outline",
+          'qf',
+          'vista_kind',
+          'spectre_panel',
+          'startuptime',
+          'Outline',
         },
         on_highlights = function(hl, c)
           hl.CursorLineNr = { fg = c.orange, bold = true }
           hl.LineNrAbove = { fg = c.fg_gutter }
           hl.LineNrBelow = { fg = c.fg_gutter }
-          local prompt = "#2d3149"
+          local prompt = '#2d3149'
           hl.TelescopeNormal = { bg = c.bg_dark, fg = c.fg_dark }
           hl.TelescopeBorder = { bg = c.bg_dark, fg = c.bg_dark }
           hl.TelescopePromptNormal = { bg = prompt }
@@ -28,7 +28,7 @@ return {
       }
     end,
     config = function()
-        vim.cmd("colorscheme tokyonight")
-    end
+      vim.cmd 'colorscheme tokyonight'
+    end,
   },
 }
