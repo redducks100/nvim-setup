@@ -6,53 +6,6 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-      {
-        'mrcjkb/rustaceanvim',
-        version = '^4',
-        ft = { 'rust' },
-        opts = {
-          server = {
-            on_attach = function(_, bufnr)
-              vim.lsp.inlay_hint.enable(true)
-              vim.keymap.set('n', '<leader>cR', function()
-                vim.cmd.RustLsp 'codeAction'
-              end, { desc = 'Code Action', buffer = bufnr })
-              vim.keymap.set('n', '<leader>dr', function()
-                vim.cmd.RustLsp 'debuggables'
-              end, { desc = 'Rust Debuggables', buffer = bufnr })
-            end,
-            default_settings = {
-              -- rust-analyzer language server configuration
-              ['rust-analyzer'] = {
-                cargo = {
-                  allFeatures = true,
-                  loadOutDirsFromCheck = true,
-                  buildScripts = {
-                    enable = true,
-                  },
-                },
-                -- Add clippy lints for Rust.
-                checkOnSave = {
-                  allFeatures = true,
-                  command = 'clippy',
-                  extraArgs = { '--no-deps' },
-                },
-                procMacro = {
-                  enable = true,
-                  ignored = {
-                    ['async-trait'] = { 'async_trait' },
-                    ['napi-derive'] = { 'napi' },
-                    ['async-recursion'] = { 'async_recursion' },
-                  },
-                },
-              },
-            },
-          },
-        },
-        config = function(_, opts)
-          vim.g.rustaceanvim = vim.tbl_deep_extend('keep', vim.g.rustaceanvim or {}, opts or {})
-        end,
-      },
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
@@ -184,6 +137,13 @@ return {
               buffer = event.buf,
               callback = vim.lsp.buf.clear_references,
             })
+          end
+
+          if client and client.server_capabilities.inlayHintProvider then
+            map('<leader>th', function()
+              local current_setting = vim.lsp.inlay_hint.is_enabled {}
+              vim.lsp.inlay_hint.enable(not current_setting)
+            end, '[T]oggle Inlay [H]ints')
           end
         end,
       })
