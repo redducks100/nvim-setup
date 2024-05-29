@@ -180,7 +180,7 @@ return {
                   vim.lsp.buf.hover()
                 end
               end,
-              desc = 'Show Crate Documentation',
+              desc = 'LSP: Show Crate Documentation',
             },
           },
         },

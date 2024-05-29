@@ -12,19 +12,19 @@ return {
 
     ui.setup()
 
-    vim.keymap.set('n', '<space>b', dap.toggle_breakpoint)
-    vim.keymap.set('n', '<space>gb', dap.run_to_cursor)
+    vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle breakpoint' })
+    vim.keymap.set('n', '<leader>gb', dap.run_to_cursor, { desc = 'Debug: Run to cursor' })
 
-    vim.keymap.set('n', '<space>?', function()
+    vim.keymap.set('n', '<leader>?', function()
       ui.eval(nil, { enter = true })
-    end)
+    end, { desc = 'Debug: Evaluate variable' })
 
-    vim.keymap.set('n', '<F1>', dap.continue)
-    vim.keymap.set('n', '<F2>', dap.step_into)
-    vim.keymap.set('n', '<F3>', dap.step_over)
-    vim.keymap.set('n', '<F4>', dap.step_out)
-    vim.keymap.set('n', '<F5>', dap.step_back)
-    vim.keymap.set('n', '<F11>', dap.restart)
+    vim.keymap.set('n', '<F1>', dap.continue, { desc = 'Debug: Continue debugging' })
+    vim.keymap.set('n', '<F2>', dap.step_into, { desc = 'Debug: Step into' })
+    vim.keymap.set('n', '<F3>', dap.step_over, { desc = 'Debug: Step over' })
+    vim.keymap.set('n', '<F4>', dap.step_out, { desc = 'Debug: Step out' })
+    vim.keymap.set('n', '<F5>', dap.step_back, { desc = 'Debug: Step back' })
+    vim.keymap.set('n', '<F11>', dap.restart, { desc = 'Debug: Restart' })
 
     dap.listeners.before.attach.dapui_config = function()
       ui.open()
