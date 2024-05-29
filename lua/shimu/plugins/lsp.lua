@@ -14,9 +14,8 @@ return {
       -- used for completion, annotations and signatures of Neovim apis
       { 'folke/neodev.nvim', opts = {} },
     },
-    opts = {
-      inlay_hints = { enabled = true },
-    },
+    ---@class PluginLspOpts
+    opts = { inlay_hints = { enabled = true } },
     setup = {
       rust_analyzer = function()
         return true
@@ -127,6 +126,7 @@ return {
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+
           if client and client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -190,41 +190,74 @@ return {
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {
-          keys = {
-            {
-              '<leader>co',
-              function()
-                vim.lsp.buf.code_action {
-                  apply = true,
-                  context = {
-                    only = { 'source.organizeImports.ts', 'source.organizeImports.tsx' },
-                    diagnostics = {},
-                  },
-                }
-              end,
-              desc = 'Organize Imports',
-            },
-            {
-              '<leader>cR',
-              function()
-                vim.lsp.buf.code_action {
-                  apply = true,
-                  context = {
-                    only = { 'source.removeUnused.ts', 'source.removeUnused.tsx' },
-                    diagnostics = {},
-                  },
-                }
-              end,
-              desc = 'Remove Unused Imports',
-            },
-          },
-          ---@diagnostic disable-next-line: missing-fields
+        tsserver = { enabled = false },
+        html = {},
+        prismals = {},
+        vtsls = {
           settings = {
-            completions = {
-              completeFunctionCalls = true,
+            complete_function_calls = true,
+            typescript = {
+              updateImportsOnFileMove = { enabled = 'always' },
+              enableMoveToFileCodeAction = true,
+              experimental = {
+                completion = {
+                  enableServerSideFuzzyMatch = true,
+                },
+              },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = 'literals' },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = false },
+              },
+            },
+            javascript = {
+              updateImportsOnFileMove = { enabled = 'always' },
+              enableMoveToFileCodeAction = true,
+              experimental = {
+                completion = {
+                  enableServerSideFuzzyMatch = true,
+                },
+              },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = 'literals' },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = false },
+              },
             },
           },
+          on_attach = function(_, bufnr)
+            local map = function(keys, func, desc)
+              vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. desc })
+            end
+
+            map('<leader>cR', function()
+              require('vtsls').commands.remove_unused()
+            end, 'Remove unused imports')
+
+            map('<leader>co', function()
+              require('vtsls').commands.organize_imports(0)
+            end, 'Organize Imports')
+
+            map('<leader>cD', function()
+              require('vtsls').commands.remove_unused(0)
+            end, 'Remove unused')
+
+            map('<leader>cM', function()
+              require('vtsls').commands.add_missing_imports(0)
+            end, 'Add missing imports')
+          end,
         },
         tailwindcss = {
           filetypes_exclude = { 'markdown' },
@@ -237,6 +270,7 @@ return {
           -- capabilities = {},
           settings = {
             Lua = {
+              hint = { enable = true },
               completion = {
                 callSnippet = 'Replace',
               },
@@ -260,6 +294,8 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'js-debug-adapter',
+        'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -275,6 +311,13 @@ return {
           end,
         },
       }
+    end,
+  },
+  {
+    'neovim/nvim-lspconfig',
+    opts = function(_, opts)
+      -- add vtsls to lspconfig
+      require('lspconfig.configs').vtsls = require('vtsls').lspconfig
     end,
   },
 }

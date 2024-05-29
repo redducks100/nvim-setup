@@ -4,7 +4,7 @@ return {
     build = ':TSUpdate',
     config = function()
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'vimdoc', 'javascript', 'typescript', 'tsx', 'c', 'lua', 'rust', 'toml', 'ron' },
+        ensure_installed = { 'vimdoc', 'c', 'lua', 'rust', 'toml', 'ron' },
         sync_install = false,
         auto_install = true,
         indent = { enable = true },

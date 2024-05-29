@@ -6,13 +6,6 @@ return {
     {
       '<leader>fe',
       function()
-        require('neo-tree.command').execute { toggle = true, dir = vim.root() }
-      end,
-      desc = 'Explorer NeoTree (Root Dir)',
-    },
-    {
-      '<leader>fE',
-      function()
         require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd() }
       end,
       desc = 'Explorer NeoTree (cwd)',
@@ -74,6 +67,7 @@ return {
           desc = 'Open with System Application',
         },
         ['q'] = 'close_window',
+        ['<tab>'] = 'toggle_node',
       },
     },
     default_component_configs = {
