@@ -17,9 +17,6 @@ return {
     ---@class PluginLspOpts
     opts = { inlay_hints = { enabled = true } },
     setup = {
-      rust_analyzer = function()
-        return true
-      end,
       tailwindcss = function(_, opts)
         local tw = require 'lspconfig.server_configurations.tailwindcss'
         opts.filetypes = opts.filetypes or {}
@@ -169,21 +166,6 @@ return {
         -- gopls = {},
         -- pyright = {},
         codelldb = {},
-        taplo = {
-          keys = {
-            {
-              'K',
-              function()
-                if vim.fn.expand '%:t' == 'Cargo.toml' and require('crates').popup_available() then
-                  require('crates').show_popup()
-                else
-                  vim.lsp.buf.hover()
-                end
-              end,
-              desc = 'LSP: Show Crate Documentation',
-            },
-          },
-        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
