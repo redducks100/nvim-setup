@@ -3,6 +3,8 @@ local opts = { noremap = true, silent = true }
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.keymap.set('n', '-', '<cmd>Oil --float<CR>', { desc = 'Open Parent Directory in Oil' })
+
 -- Move selection up/down
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Text: Move selection down' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Text: Move selection up' })
@@ -73,6 +75,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Diag: Open
 vim.keymap.set('n', '<leader>td', function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = 'Diag: Toggle diagnostics' })
+
+vim.keymap.set('n', '<leader>f', function()
+  require('conform').format { lsp_format = 'fallback' }
+end, { desc = 'Format current file' })
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
